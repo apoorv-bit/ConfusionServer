@@ -20,7 +20,7 @@ const mongoose = require('mongoose');
 const Dishes=require('./models/dishes');
 const Leaders=require('./models/leaders');
 const Promos=require('./models/promo');
-
+const uploadRouter = require('./routes/uploadRouter');
 const url = config.mongoUrl;
 const connect=mongoose.connect(url);
 
@@ -29,6 +29,15 @@ connect.then((db)=>{
 },(err)=>{console.log(err);});
 
 var app = express();
+// Secure traffic only
+app.all('*', (req, res, next) => {
+  if (req.secure) {
+    return next();
+  }
+  else {
+    res.redirect(307, 'https://' + req.hostname + ':' + app.get('secPort') + req.url);
+  }
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -45,7 +54,7 @@ app.use('/users', usersRouter);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+app.use('/imageUpload',uploadRouter);
 app.use('/dishes',dishRouter);
 app.use('/promos',promoRouter);
 app.use('/leaders',leaderRouter);
