@@ -14,15 +14,18 @@ var usersRouter = require('./routes/users');
 var dishRouter = require('./routes/dishRouter');
 var promoRouter = require('./routes/promoRouter');
 var leaderRouter = require('./routes/leaderRouter');
+var favouriteRouter = require('./routes/favouriteRouter');
 
 
 const mongoose = require('mongoose');
 const Dishes=require('./models/dishes');
 const Leaders=require('./models/leaders');
 const Promos=require('./models/promo');
+const Favoutites=require('./models/favourite');
 const uploadRouter = require('./routes/uploadRouter');
 const url = config.mongoUrl;
 const connect=mongoose.connect(url);
+
 
 connect.then((db)=>{
 	console.log('connected correctly to the server');
@@ -51,7 +54,7 @@ app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
+app.use('/favourites',favouriteRouter);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/imageUpload',uploadRouter);
